@@ -28,6 +28,7 @@ export default function AppBanner() {
 
     const handleLogout = () => {
         handleMenuClose();
+        console.log('handle logout')
         auth.logoutUser();
     }
 
@@ -49,6 +50,7 @@ export default function AppBanner() {
             onClose={handleMenuClose}
         >
             <MenuItem onClick={handleMenuClose}><Link to='/register/'>Create New Account</Link></MenuItem>
+            <MenuItem onClick={handleMenuClose}><Link to='/login/'>Log In</Link></MenuItem>
         </Menu>
     );
     const loggedInMenu = 
@@ -72,11 +74,14 @@ export default function AppBanner() {
 
     let editToolbar = "";
     let menu = loggedOutMenu;
+    let initials = "";
+
     if (auth.loggedIn) {
         menu = loggedInMenu;
         if (store.currentList) {
             editToolbar = <EditToolbar />;
         }
+        initials = auth.user.firstName.charAt(0) + auth.user.lastName.charAt(0)
     }
     
     function getAccountMenu(loggedIn) {
@@ -91,12 +96,12 @@ export default function AppBanner() {
                         variant="h4"
                         noWrap
                         component="div"
-                        sx={{ display: { xs: 'none', sm: 'block' } }}                        
+                        sx={{ display: { xs: 'none', sm: 'block'} }}                        
                     >
                         <Link style={{ textDecoration: 'none', color: 'white' }} to='/'>T<sup>5</sup>L</Link>
                     </Typography>
                     <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
-                    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                    <Box sx={{ display: { xs: "2", md: 'flex' } }}>
                         <IconButton
                             size="large"
                             edge="end"
@@ -108,6 +113,15 @@ export default function AppBanner() {
                         >
                             { getAccountMenu(auth.loggedIn) }
                         </IconButton>
+                    </Box>
+                    <Box>
+                        <Typography
+                         variant="h4"
+                         noWrap
+                         component="div"
+                         sx={{ display: { xs: "2", sm: 'block' } }}  >
+                            {initials}
+                        </Typography>
                     </Box>
                 </Toolbar>
             </AppBar>

@@ -1,4 +1,5 @@
 const Top5List = require('../models/top5list-model');
+const auth = require('../auth')
 
 createTop5List = (req, res) => {
     const body = req.body;
@@ -10,7 +11,6 @@ createTop5List = (req, res) => {
     }
 
     const top5List = new Top5List(body);
-    console.log("creating top5List: " + JSON.stringify(top5List));
     if (!top5List) {
         return res.status(400).json({ success: false, error: err })
     }
@@ -34,7 +34,6 @@ createTop5List = (req, res) => {
 
 updateTop5List = async (req, res) => {
     const body = req.body
-    console.log("updateTop5List: " + JSON.stringify(body));
     if (!body) {
         return res.status(400).json({
             success: false,
@@ -108,8 +107,9 @@ getTop5Lists = async (req, res) => {
         return res.status(200).json({ success: true, data: top5Lists })
     }).catch(err => console.log(err))
 }
+
 getTop5ListPairs = async (req, res) => {
-    await Top5List.find({ }, (err, top5Lists) => {
+    await Top5List.find({ ownerEmail: req.body.ownerEmail }, (err, top5Lists) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -120,6 +120,7 @@ getTop5ListPairs = async (req, res) => {
                 .json({ success: false, error: 'Top 5 Lists not found' })
         }
         else {
+            
             // PUT ALL THE LISTS INTO ID, NAME PAIRS
             let pairs = [];
             for (let key in top5Lists) {

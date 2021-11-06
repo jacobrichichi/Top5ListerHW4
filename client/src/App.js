@@ -8,7 +8,8 @@ import {
     HomeWrapper,
     RegisterScreen,
     Statusbar,
-    WorkspaceScreen
+    WorkspaceScreen,
+    LoginScreen
 } from './components'
 /*
     This is our application's top-level component.
@@ -20,6 +21,7 @@ import {
   inject our store into all the components in our application.
   
   @author McKilla Gorilla
+
 */
 const App = () => {
     return (
@@ -30,6 +32,7 @@ const App = () => {
                     <Switch>
                         <Route path="/" exact component={HomeWrapper} />
                         <Route path="/register/" exact component={RegisterScreen} />
+                        <Route path="/login/" exact component={LoginScreen} />
                         <Route path="/top5list/:id" exact component={WorkspaceScreen} />
                     </Switch>
                     <Statusbar />

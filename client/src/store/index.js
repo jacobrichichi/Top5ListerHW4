@@ -58,7 +58,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.CHANGE_LIST_NAME: {
                 return setStore({
                     idNamePairs: payload.idNamePairs,
-                    currentList: payload.top5List,
+                    currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
@@ -172,7 +172,7 @@ function GlobalStoreContextProvider(props) {
                 response = await api.updateTop5ListById(top5List._id, top5List);
                 if (response.data.success) {
                     async function getListPairs(top5List) {
-                        response = await api.getTop5ListPairs();
+                        response = await api.getTop5ListPairs({ ownerEmail: auth.user.email });
                         if (response.data.success) {
                             let pairsArray = response.data.idNamePairs;
                             storeReducer({
@@ -230,7 +230,9 @@ function GlobalStoreContextProvider(props) {
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = async function () {
-        const response = await api.getTop5ListPairs();
+        console.log('store.loadIdNamepairs')
+        console.log(auth.user.email)
+        const response = await api.getTop5ListPairs({ ownerEmail: auth.user.email });
         if (response.data.success) {
             let pairsArray = response.data.idNamePairs;
             storeReducer({
@@ -250,17 +252,18 @@ function GlobalStoreContextProvider(props) {
     store.markListForDeletion = async function (id) {
         // GET THE LIST
         let response = await api.getTop5ListById(id);
+
         if (response.data.success) {
             let top5List = response.data.top5List;
             storeReducer({
                 type: GlobalStoreActionType.MARK_LIST_FOR_DELETION,
-                payload: top5List
+                payload: [id, top5List.name]
             });
         }
     }
 
     store.deleteList = async function (listToDelete) {
-        let response = await api.deleteTop5ListById(listToDelete._id);
+        let response = await api.deleteTop5ListById(listToDelete[0]);
         if (response.data.success) {
             store.loadIdNamePairs();
             history.push("/");

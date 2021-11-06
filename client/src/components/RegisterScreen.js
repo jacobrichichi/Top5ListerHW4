@@ -1,4 +1,5 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
+import Alert from '@mui/material/Alert';
 import AuthContext from '../auth'
 import Copyright from './Copyright'
 import Avatar from '@mui/material/Avatar';
@@ -8,6 +9,7 @@ import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
+import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -16,6 +18,8 @@ import { GlobalStoreContext } from '../store'
 export default function RegisterScreen() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext)
+
+    const [ isModalOpen, setIsModalOpen ] = useState(true)
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -27,11 +31,48 @@ export default function RegisterScreen() {
             password: formData.get('password'),
             passwordVerify: formData.get('passwordVerify')
         }, store);
+
+        setIsModalOpen(true)
     };
+
+    const handleCloseModal = (event) => {
+        event.stopPropagation();
+        auth.closeErrorMessage();
+        setIsModalOpen(false)
+    }
+
+    let modal = ""
+    if(auth.isWrongCredentials){
+        let errorMessage = auth.wrongCredentials
+
+        modal = <Modal
+                    open = {isModalOpen}
+                    onClose={handleCloseModal}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >   
+                    <Box sx = 
+                        {{position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 400,
+                        bgcolor: 'background.paper',
+                        border: '2px solid #000',
+                        boxShadow: 24,
+                        p: 4,}}
+                        >
+                        <Alert severity="warning">{errorMessage}</Alert>
+                        <Button variant="outlined" onClick = {handleCloseModal}>OK</Button>
+                    </Box>
+                </Modal>
+    }
+
 
     return (
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
+                {modal}
                 <Box
                     sx={{
                         marginTop: 8,

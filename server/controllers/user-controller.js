@@ -21,27 +21,29 @@ registerUser = async (req, res) => {
         const { firstName, lastName, email, password, passwordVerify } = req.body;
         if (!firstName || !lastName || !email || !password || !passwordVerify) {
             return res
-                .status(400)
-                .json({ errorMessage: "Please enter all required fields." });
+                .status(200)
+                .json({ success: false, errorMessage: "Please enter all required fields." });
         }
         if (password.length < 8) {
             return res
-                .status(400)
+                .status(200)
                 .json({
+                    success: false,
                     errorMessage: "Please enter a password of at least 8 characters."
                 });
         }
         if (password !== passwordVerify) {
             return res
-                .status(400)
+                .status(200)
                 .json({
+                    success: false,
                     errorMessage: "Please enter the same password twice."
                 })
         }
         const existingUser = await User.findOne({ email: email });
         if (existingUser) {
             return res
-                .status(400)
+                .status(200)
                 .json({
                     success: false,
                     errorMessage: "An account with this email address already exists."
@@ -78,7 +80,79 @@ registerUser = async (req, res) => {
     }
 }
 
+logoutUser = async (req, res) => { 
+    const token = auth.signToken({ _id: -1 });
+
+    await res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        expire: new Date('1970-01-01T00:00:00')
+    }).status(200).json({
+        success: true
+    })
+
+}
+
+loginUser = async (req, res) => {
+    
+    try{
+
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res
+                .status(200)
+                .json({ success: false, errorMessage: "Please enter all required fields." });
+        }
+        
+
+        const existingUser = await User.findOne({ email: email });
+
+        if (!existingUser) {
+            return res
+                .status(200)
+                .json({
+                    success: false,
+                    errorMessage: "The email or password was wrong"
+                })
+        }
+
+        const passwordCorrect = bcrypt.compare(password, existingUser.passwordHash)
+        
+        if(!passwordCorrect){
+            return res
+                .status(200)
+                .json({
+                    success: false,
+                    errorMessage: "The email or password was wrong"
+                })
+        }
+
+        const token = auth.signToken(existingUser);
+
+        await res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
+        }).status(200).json({
+            success: true,
+            user: {
+                firstName: existingUser.firstName,
+                lastName: existingUser.lastName,
+                email: existingUser.email
+            }
+        }).send();    
+    } 
+    catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+
+}
+
 module.exports = {
     getLoggedIn,
-    registerUser
+    loginUser,
+    registerUser,
+    logoutUser
 }
