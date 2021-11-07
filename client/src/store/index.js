@@ -306,8 +306,8 @@ function GlobalStoreContextProvider(props) {
         tps.addTransaction(transaction);
     }
 
-    store.addUpdateItemTransaction = function (index, newText) {
-        let oldText = store.currentList.items[index];
+    store.addUpdateItemTransaction = function (index, oldText, newText) {
+        //let oldText = store.currentList.items[index];
         let transaction = new UpdateItem_Transaction(store, index, oldText, newText);
         tps.addTransaction(transaction);
     }

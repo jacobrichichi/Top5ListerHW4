@@ -14,7 +14,7 @@ function Statusbar() {
         text = store.currentList.name;
     return (
         <div id="top5-statusbar">
-            <Typography variant="h4">{text}</Typography>
+            <Typography variant="h4">{text ? "Top 5 " + text : ""}</Typography>
         </div>
     );
 }
