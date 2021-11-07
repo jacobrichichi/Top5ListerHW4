@@ -38,6 +38,7 @@ function ListCard(props) {
             store.setIsListNameEditActive();
         }
         setEditActive(newActive);
+
     }
 
     async function handleDeleteList(event, id) {

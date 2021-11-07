@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom'
 import api from '../api'
 
 const AuthContext = createContext();
-console.log("create AuthContext: " + AuthContext);
 
 // THESE ARE ALL THE TYPES OF UPDATES TO OUR AUTH STATE THAT CAN BE PROCESSED
 export const AuthActionType = {
@@ -67,7 +66,6 @@ function AuthContextProvider(props) {
             }
 
             case AuthActionType.ADD_WRONG_CREDENTIALS: {
-                console.log(payload.message)
                 return setAuth({
                     user: null,
                     loggedIn: false,
@@ -92,7 +90,6 @@ function AuthContextProvider(props) {
 
     auth.getLoggedIn = async function () {
         const response = await api.getLoggedIn();
-        console.log(response.status)
         if (response.status === 200) {
             authReducer({
                 type: AuthActionType.SET_LOGGED_IN,
@@ -105,8 +102,6 @@ function AuthContextProvider(props) {
     }
 
     auth.loginUser = async function(userData, store) {
-        console.log('auth.loginUser')
-        console.log(userData)
 
         const response = await api.loginUser(userData);
 
@@ -135,7 +130,6 @@ function AuthContextProvider(props) {
     }
 
     auth.logoutUser = async function(store) {
-        console.log('auth method')
         const response = await api.logoutUser();
         if(response.status===200){
             authReducer({

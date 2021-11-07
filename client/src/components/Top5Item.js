@@ -51,8 +51,11 @@ function Top5Item(props) {
 
     function handleEditStart(event){
         event.preventDefault();
-        setEditActive(true);
-        store.setIsItemEditActive(true);
+        if(!store.isItemEditActive){
+            store.setIsItemEditActive(true);
+            setText(props.text)
+            setEditActive(true);
+        }
     }
 
     function handleUpdateText(event) {
@@ -61,12 +64,18 @@ function Top5Item(props) {
 
     function handleKeyPress(event) {
         if (event.code === "Enter") {
+            console.log()
             store.addUpdateItemTransaction(index, props.text, text);
             setEditActive(false);
         }
     }
 
     let { index } = props;
+    let editDisabled = false
+
+    if(store.isItemEditActive){
+        editDisabled = true
+    }
 
     let itemClass = "top5-item";
     if (draggedTo) {
@@ -101,7 +110,7 @@ function Top5Item(props) {
             }}
         >
             <Box sx={{ p: 1 }}>
-                <IconButton aria-label='edit' onClick = {handleEditStart}>
+                <IconButton aria-label='edit' disabled = {editDisabled} onClick = {handleEditStart}>
                     <EditIcon style={{fontSize:'48pt'}}  />
                 </IconButton>
             </Box>
