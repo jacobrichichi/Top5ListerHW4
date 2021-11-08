@@ -28,7 +28,6 @@ export default function AppBanner() {
 
     const handleLogout = () => {
         handleMenuClose();
-        console.log('handle logout')
         auth.logoutUser();
     }
 

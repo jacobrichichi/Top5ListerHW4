@@ -223,15 +223,10 @@ function GlobalStoreContextProvider(props) {
             // IF IT'S A VALID LIST THEN LET'S START EDITING IT
             history.push("/top5list/" + newList._id);
         }
-        else {
-            console.log("API FAILED TO CREATE A NEW LIST");
-        }
     }
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = async function () {
-        console.log('store.loadIdNamepairs')
-        console.log(auth.user.email)
         const response = await api.getTop5ListPairs({ ownerEmail: auth.user.email });
         if (response.data.success) {
             let pairsArray = response.data.idNamePairs;
@@ -239,9 +234,6 @@ function GlobalStoreContextProvider(props) {
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                 payload: pairsArray
             });
-        }
-        else {
-            console.log("API FAILED TO GET THE LIST PAIRS");
         }
     }
 
