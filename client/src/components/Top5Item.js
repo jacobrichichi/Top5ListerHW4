@@ -27,13 +27,11 @@ function Top5Item(props) {
 
     function handleDragEnter(event) {
         event.preventDefault();
-        console.log("entering");
         setDraggedTo(true);
     }
 
     function handleDragLeave(event) {
         event.preventDefault();
-        console.log("leaving");
         setDraggedTo(false);
     }
 
@@ -43,7 +41,6 @@ function Top5Item(props) {
         sourceId = sourceId.substring(sourceId.indexOf("-") + 1);
         setDraggedTo(false);
 
-        console.log("handleDrop (sourceId, targetId): ( " + sourceId + ", " + targetId + ")");
 
         // UPDATE THE LIST
         store.addMoveItemTransaction(sourceId, targetId);
@@ -64,7 +61,6 @@ function Top5Item(props) {
 
     function handleKeyPress(event) {
         if (event.code === "Enter") {
-            console.log()
             store.addUpdateItemTransaction(index, props.text, text);
             setEditActive(false);
         }
